@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tick tock</title>
+
+  <!-- add Google Fonts preconnect + Figtree variable font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <main class="app">
+
+    <!-- TIMER -->
+    <section class="timer card">
+      <div id="clock">00:00</div>
+
+      <div id="activity">ready</div>
+
+      <div class="meta">
+        <span id="elapsed">0:00</span>
+        <span id="interval"> </span>
+        <span id="remaining">0:00</span>
+      </div>
+    </section>
+
+    <!-- CONTROLS -->
+    <section class="controls">
+      <button id="start" aria-label="start">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="6 4 6 20 18 12" />
+        </svg>
+      </button>
+    <button id="pause" aria-label="pause">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="6" y="4" width="4" height="16" />
+        <rect x="14" y="4" width="4" height="16" />
+      </svg>
+    </button>
+    <button id="exit" aria-label="stop">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="6" y="6" width="12" height="12" />
+      </svg>
+    </button>
+    </section>
+
+    <!-- EDITOR -->
+    <section class="editor card">
+      <textarea id="workoutInput" rows="1">
+10x(1min run, 50sec break)
+5min walk
+      </textarea>
+    </section>
+    <span class="hint">Enter your workout like the example above!</span>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

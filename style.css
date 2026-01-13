@@ -1,0 +1,218 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #4462a8;
+  color: #111;
+  /* use Figtree with sensible fallbacks */
+  font-family: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Utility / helper classes for targeted use (examples) */
+/* Generic Figtree utility you can apply to any element */
+.figtree {
+  font-family: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-optical-sizing: auto;
+}
+
+/* Weight-specific helpers (use classes like .figtree-400 or .figtree-700) */
+.figtree-300 { font-weight: 300; }
+.figtree-400 { font-weight: 400; }
+.figtree-500 { font-weight: 500; }
+.figtree-600 { font-weight: 600; }
+.figtree-700 { font-weight: 700; }
+.figtree-800 { font-weight: 800; }
+.figtree-900 { font-weight: 900; }
+
+/* Example: make the app title / clock use a heavier Figtree weight */
+#clock { font-family: "Figtree", system-ui, -apple-system, sans-serif; font-weight: 700; }
+
+.app {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+
+/* ---------- CARDS ---------- */
+
+.card {
+  background: #ffffffac;
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+/* ---------- TIMER ---------- */
+
+.timer {
+  text-align: center;
+}
+
+#clock {
+  font-size: 4rem;
+  font-weight: 600;
+  transition: transform 0.12s ease;
+}
+
+#activity {
+  margin-top: 0.3rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+/* ---------- CONTROLS ---------- */
+
+.controls {
+  display: flex;
+  justify-content: space-around;
+}
+
+.controls button {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: #ffffffac;
+  font-size: 1.4rem;
+  cursor: pointer;
+  /* slightly quicker, more subtle transitions */
+  transition: transform 0.10s ease, background 0.10s ease, box-shadow 0.10s ease, opacity 0.08s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* subtle, tactile hover state for control buttons — reduced movement & softer shadow */
+.controls button:hover {
+  transform: translateY(-2px) scale(1.01); /* smaller lift + near-no scale */
+  box-shadow: 0 6px 14px rgba(20,20,40,0.055); /* softer, less spread */
+  background: linear-gradient(180deg, #ffffff, #fbfbff); /* very subtle tint */
+}
+
+/* keyboard focus — keep the blue outline you liked */
+.controls button:focus {
+  outline: 3px solid rgba(66,133,244,0.12);
+  outline-offset: 3px;
+}
+
+/* active (pressed) state: smaller change so it feels sturdy */
+.controls button:active {
+  transform: translateY(0) scale(0.995);
+  box-shadow: 0 4px 10px rgba(20,20,40,0.04);
+}
+
+/* ---------- EDITOR ---------- */
+
+.editor textarea {
+  width: 100%;
+  border: none;
+  font-family: monospace;
+  font-size: 0.95rem;
+  padding: 0.5rem;
+  resize: none;
+  line-height: 1.4;
+  background: transparent;
+
+  /* make input area look interactive and readable */
+  background: #ffffffac;
+  border: 1px solid rgba(10, 10, 20, 0.06);
+  border-radius: 10px;
+  padding: 0.75rem 0.75rem;
+  transition: box-shadow 0.12s ease, border-color 0.12s ease, transform 0.06s ease;
+  color: #111; /* normal text color */
+}
+
+/* placeholder hint (lighter / slightly italic) */
+.editor textarea::placeholder {
+  color: #9aa0a6; /* lighter gray */
+  font-style: italic;
+  opacity: 1; /* ensure consistent appearance across browsers */
+}
+
+
+/* small visible label + helper text */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 0.8rem;
+  color: #5c6168;
+  font-weight: 600;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: #d0d4da;
+  text-align: center;
+}
+
+/* ---------- fix numeric layout jitter ---------- */
+/* Use tabular (fixed-width) numerals so digit widths don't shift the layout */
+#clock,
+.meta,
+.meta * {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  -webkit-font-feature-settings: "tnum" 1;
+  -moz-font-feature-settings: "tnum" 1;
+}
+
+/* subtle clock pulse (smaller scale, shorter duration) */
+@keyframes clock-pulse {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.01); }
+  100% { transform: scale(1); }
+}
+#clock.pulse {
+  animation: clock-pulse 120ms ease-in-out both;
+}
+
+/* animate the first character of the activity on change */
+.activity-initial {
+  display: inline-block;
+  transform-origin: center;
+  animation: activity-initial-pop 300ms cubic-bezier(.2,.9,.2,1);
+  will-change: transform, opacity;
+}
+@keyframes activity-initial-pop {
+  0%   { opacity: 0; transform: translateY(6px) scale(0.98); }
+  60%  { opacity: 1; transform: translateY(-2px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* small fade-in for the rest of the activity text so the whole label feels cohesive */
+.activity-rest {
+  display:inline-block;
+  opacity: 0;
+  animation: activity-rest-fade 320ms cubic-bezier(.2,.9,.2,1) 80ms both;
+}
+@keyframes activity-rest-fade {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  #clock.pulse { animation: none !important; }
+  .activity-initial, .activity-rest { animation: none !important; transform: none !important; opacity: 1 !important; }
+}

@@ -181,6 +181,7 @@ let index = 0;
 let remaining = 0;
 let elapsed = 0;
 let intervalId = null;
+let sampleTimeoutId = null; // <--- added
 
 let isRunning = false;
 let isPaused = false;
@@ -215,6 +216,7 @@ function start() {
 
 function startActivity(subtractOne = false) {
   clearInterval(intervalId);
+  if (sampleTimeoutId) { clearTimeout(sampleTimeoutId); sampleTimeoutId = null; }
 
   // start next activity with full duration normally,
   // but if subtractOne is true (transitioning immediately after previous finished)
@@ -222,6 +224,19 @@ function startActivity(subtractOne = false) {
   remaining = Math.max(0, timeline[index].duration - (subtractOne ? 1 : 0));
   updateUI();
   intervalId = setInterval(tick, 1000);
+
+  // schedule sample to play exactly 3 seconds before the interval end
+  if (index < timeline.length - 1) {
+    if (remaining > 3) {
+      sampleTimeoutId = setTimeout(() => {
+        playSample();
+        sampleTimeoutId = null;
+      }, (remaining - 3) * 1000);
+    } else if (remaining === 3) {
+      // play immediately if already at the 3s mark
+      playSample();
+    }
+  }
 }
 
 function tick() {
@@ -229,11 +244,6 @@ function tick() {
 
   remaining--;
   elapsed++;
-
-  // Play sample 4 seconds before the interval end (so it sounds before track switch)
-  if (remaining === 3 && index < timeline.length - 1) {
-    playSample();
-  }
 
   updateUI();
   pulseClock();
@@ -250,6 +260,7 @@ function next() {
 
 function pause() {
   clearInterval(intervalId);
+  if (sampleTimeoutId) { clearTimeout(sampleTimeoutId); sampleTimeoutId = null; }
   isPaused = true;
   isRunning = false;
   updateControls();
@@ -259,11 +270,26 @@ function resume() {
   isPaused = false;
   isRunning = true;
   intervalId = setInterval(tick, 1000);
+
+  // reschedule the sample for the remaining time
+  if (index < timeline.length - 1) {
+    if (sampleTimeoutId) { clearTimeout(sampleTimeoutId); sampleTimeoutId = null; }
+    if (remaining > 3) {
+      sampleTimeoutId = setTimeout(() => {
+        playSample();
+        sampleTimeoutId = null;
+      }, (remaining - 3) * 1000);
+    } else if (remaining === 3) {
+      playSample();
+    }
+  }
+
   updateControls();
 }
 
 function stop() {
   clearInterval(intervalId);
+  if (sampleTimeoutId) { clearTimeout(sampleTimeoutId); sampleTimeoutId = null; }
   isRunning = false;
   isPaused = false;
 
@@ -273,6 +299,15 @@ function stop() {
   elapsedEl.textContent = "0:00";
   remainingEl.textContent = "0:00";
 
+  updateControls();
+}
+
+function finish() {
+  clearInterval(intervalId);
+  if (sampleTimeoutId) { clearTimeout(sampleTimeoutId); sampleTimeoutId = null; }
+  clock.textContent = "🎉";
+  activityEl.textContent = "done";
+  isRunning = false;
   updateControls();
 }
 
@@ -308,6 +343,7 @@ function updateUI() {
 // --------------------
 function finish() {
   clearInterval(intervalId);
+  if (sampleTimeoutId) { clearTimeout(sampleTimeoutId); sampleTimeoutId = null; }
   clock.textContent = "🎉";
   activityEl.textContent = "done";
   isRunning = false;

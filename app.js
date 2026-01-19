@@ -231,7 +231,7 @@ function tick() {
   elapsed++;
 
   // Play sample 4 seconds before the interval end (so it sounds before track switch)
-  if (remaining === 4 && index < timeline.length - 1) {
+  if (remaining === 3 && index < timeline.length - 1) {
     playSample();
   }
 
@@ -361,7 +361,7 @@ async function loadSample() {
     if (!ctx) return null;
     if (sampleBuffer) return sampleBuffer;
 
-    const candidates = ["sound.wav", "sound.wav.asd"];
+    const candidates = ["sound.wav", "sound.wav.asd", "sound.wv.asd"];
     for (const url of candidates) {
       try {
         const resp = await fetch(url);
